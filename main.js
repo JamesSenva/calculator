@@ -18,6 +18,9 @@ for (const btn of btns) {
     } 
 }
 
+function handleKeyPress(e) {
+    console.log(e.key, typeof e.key);
+}
 
 // second display
 const lastCalculation = document.querySelector('h4');
@@ -63,28 +66,16 @@ function operate(n1, n2, operator) {
 // display values are stored and managed here
 let displayValue = '';
 
-function populateDisplay(value) {
-    value = value.target;
+function populateDisplay(e) {
+    let value = e.target;
     
     if (value.classList.contains('number')) {
         if (displayValue === result || result === 'Cannot ÷ by 0') {
-            displayValue = '';
-            lastCalculation.textContent = '';
+            reset();
         }
         displayValue += value.textContent;
     }
     
-    // this code below shows the operator on display
-    // if (value.classList.contains('plus')) {
-    //     displayValue += "+";
-    // } else if (value.classList.contains('minus')) {
-    //     displayValue += "-";
-    // } else if (value.classList.contains('multiply')) {
-    //     displayValue += "×";
-    // } else if (value.classList.contains('divide')) {
-    //     displayValue += "÷";
-    // } 
-
     if (value.classList.contains('equals')) {
         displayValue = result;
     }
@@ -95,7 +86,9 @@ function populateDisplay(value) {
 // numbers are managed here for the calculation
 function handleNumbers(e) {
     let input = e.target.textContent;
-    
+    if (displayValue === result || result === 'Cannot ÷ by 0') {
+        reset();
+    }
     if (operatorSwitch === true) {
         if (secondNumber.includes('.') && input === '.') return;
         secondNumber += input;
@@ -117,12 +110,16 @@ function handleNumbers(e) {
 function handleOperator(e) {
     let target = e.target;
 
-    if (operatorSwitch === true && firstNumber === "" && result !== undefined) {
+    operatorSwitch = true;
+    
+    if (operatorSwitch === true && firstNumber === "" && result) {
         firstNumber = result;
     } else if (firstNumber === '') {
         firstNumber = 0;
     }
-    operatorSwitch = true;
+    if (operator !== undefined) {
+        handleOperatorResult();
+    } 
 
     if (target.classList.contains('plus')) {
         operator = '+';
@@ -134,9 +131,6 @@ function handleOperator(e) {
         operator = '/';
     } 
     
-    if (operator !== undefined) {
-        handleOperatorResult();
-    } 
 
     populateDisplay(e);
     displayValue = '';
@@ -196,7 +190,7 @@ function reset() {
     firstNumber = '';
     secondNumber = '';
     operator;
-    result = '';
+    result = null;
     operatorSwitch = false;
     displayValue = '';
     display.textContent = '';
