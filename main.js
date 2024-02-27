@@ -18,9 +18,57 @@ for (const btn of btns) {
     } 
 }
 
-function handleKeyPress(e) {
-    console.log(e.key, typeof e.key);
-}
+// keyboard events
+window.addEventListener("keydown", (event) => {
+    const key = event.key;
+        if (event.defaultPrevented) {
+            return; // Do nothing if the event was already processed
+        }
+      
+        switch (key) {
+            case "0":
+            case "1":
+            case "2":
+            case "3":
+            case "4":
+            case "5":
+            case "6":
+            case "7":
+            case "8":
+            case "9":
+            case ".":
+                handleKeyNumbers(key);
+                break;
+            case "+":
+            case "-":
+            case "*":
+            case "/":
+                handleKeyOperator(key);
+                break;
+            case "%":
+                handlePercent(key);
+                break;        
+            case "Enter":
+                handleResult();
+                break;
+            case "Escape":
+                reset();
+                break;
+            case "Backspace":
+                backspace();
+                break;
+            default:
+                return; // Quit when this doesn't handle the key event.
+        }
+  
+        // Cancel the default action to avoid it being handled twice
+        event.preventDefault();
+    },
+    true,
+  );
+
+
+
 
 // second display
 const lastCalculation = document.querySelector('h4');
@@ -83,6 +131,24 @@ function populateDisplay(e) {
     display.textContent = displayValue;
 }
     
+
+function populateDisplay(e) {
+    let value = e.target;
+    
+    if (value.classList.contains('number')) {
+        if (displayValue === result || result === 'Cannot ÷ by 0') {
+            reset();
+        }
+        displayValue += value.textContent;
+    }
+    
+    if (value.classList.contains('equals')) {
+        displayValue = result;
+    }
+    
+    display.textContent = displayValue;
+}
+
 // numbers are managed here for the calculation
 function handleNumbers(e) {
     let input = e.target.textContent;
@@ -99,9 +165,29 @@ function handleNumbers(e) {
 
     populateDisplay(e);
 
-    console.log('first: ', firstNumber, 'second: ', secondNumber);
+    // console.log('first: ', firstNumber, 'second: ', secondNumber);
 }       
 
+
+// number keyboard events
+function handleKeyNumbers(key) {
+    if (displayValue === result || result === 'Cannot ÷ by 0') {
+        reset();
+    }
+    if (operatorSwitch === true) {
+        if (secondNumber.includes('.') && key === '.') return;
+        secondNumber += key;
+        displayValue += key;
+    } else {
+        if (firstNumber.includes('.') && key === '.') return;
+        firstNumber += key;
+        displayValue += key;
+    }
+
+    display.textContent = displayValue;
+
+    // console.log('first: ', firstNumber, 'second: ', secondNumber);
+}  
 
 
 
@@ -109,7 +195,7 @@ function handleNumbers(e) {
 // operators are managed here for the calculation
 function handleOperator(e) {
     let target = e.target;
-
+    if (result === 'Cannot ÷ by 0') return;
     operatorSwitch = true;
     
     if (operatorSwitch === true && firstNumber === "" && result) {
@@ -137,10 +223,46 @@ function handleOperator(e) {
     display.textContent = '';
     lastCalculation.textContent = `${firstNumber} ${operator === '/' ? '÷' : operator === '*' ? '×' : operator} ${secondNumber}`;
 
-    console.log('operator: ', operator);
-    console.log('operatorSwitch: ', operatorSwitch);
-    console.log('operator first: ', firstNumber, 'operator second: ', secondNumber);
-    console.log('operator result: ', result);
+    // console.log('operator: ', operator);
+    // console.log('operatorSwitch: ', operatorSwitch);
+    // console.log('operator first: ', firstNumber, 'operator second: ', secondNumber);
+    // console.log('operator result: ', result);
+}
+
+// operator keyboard events
+function handleKeyOperator(key) {
+    operatorSwitch = true;
+    if (result === 'Cannot ÷ by 0') return;
+    
+    if (operatorSwitch === true && firstNumber === "" && result) {
+        firstNumber = result;
+    } else if (firstNumber === '') {
+        firstNumber = 0;
+    }
+    if (operator !== undefined) {
+        handleOperatorResult();
+    } 
+
+    if (key === '+') {
+        operator = '+';
+    } else if (key === '-') {
+        operator = '-';
+    } else if (key === '*') {
+        operator = '*';
+    } else if (key === '/') {
+        operator = '/';
+    } 
+    
+
+    // populateDisplay(e);
+    displayValue = '';
+    display.textContent = '';
+    lastCalculation.textContent = `${firstNumber} ${operator === '/' ? '÷' : operator === '*' ? '×' : operator} ${secondNumber}`;
+
+    // console.log('operator: ', operator);
+    // console.log('operatorSwitch: ', operatorSwitch);
+    // console.log('operator first: ', firstNumber, 'operator second: ', secondNumber);
+    // console.log('operator result: ', result);
 }
 
 function handlePercent() {
@@ -164,11 +286,12 @@ function handleResult() {
     secondNumber = "";
     operatorSwitch = false;
 
-    console.log('= ', result);
+    // console.log('= ', result);
 }
 
 // handles result when fN sN and Operator is stored and operator is clicked
 function handleOperatorResult() {
+    if (result === 'Cannot ÷ by 0') return;
     if (!secondNumber) return;
     operate(firstNumber, secondNumber, operator);
     // displayValue = result;
@@ -214,10 +337,10 @@ function backspace() {
     }
     display.textContent = displayValue;
     
-    console.log('firstN', firstNumber, '---', 'secondN', secondNumber);
-    console.log(operator);
-    console.log(operatorSwitch);
-    console.log(displayValue);
+    // console.log('firstN', firstNumber, '---', 'secondN', secondNumber);
+    // console.log(operator);
+    // console.log(operatorSwitch);
+    // console.log(displayValue);
 }
 
 
