@@ -48,21 +48,30 @@ span {
 /* calculation display area */
 .display {
     height: 250px;
-    display: flex;
+    /* display: flex;
     flex-direction: column;
     align-items: end;
     justify-content: space-around;
-    margin-right: 35px;
+    margin-right: 35px; */
+    position: relative;
 }
 
 h4 {
     /* margin-bottom: 50px; */
-    font-size: 24px;
+    font-size: 20px;
     color: #4b4e55;
+    position: absolute;
+    top: 40px;
+    right: 35px;
 }
 
 h1 {
-    font-size: 60px;
+    /* font-family: "Oswald", sans-serif;
+    font-weight: 700; */
+    font-size: 45px;
+    position: absolute;
+    top: 150px;
+    right: 35px;
 }
 
 /* third div with all the calculator buttons */
@@ -158,3 +167,6 @@ footer {
     font-size: small;
 }
 
+a {
+    text-decoration: none;
+}
