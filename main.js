@@ -106,9 +106,15 @@ function operate(n1, n2, operator) {
         default:
             return null
     }
-    if (typeof result === "number" && result.toString().length > 8) {
-        result = result.toFixed(6);
-    }
+	if (typeof result === "number") {
+		if (result.toString().length > 11) {
+			if (result.toFixed(6).length <= 11) {
+				result = result.toFixed(6);
+			} else {
+				result = result.toExponential(6);
+			}
+		}
+	}
 }
 
 // display values are stored and managed here
@@ -121,8 +127,8 @@ function populateDisplay(e) {
 		if (displayValue === result || result === 'Cannot ÷ by 0') {
 			reset();
 		}
-		if (displayValue === '' && value === '.') {
-			displayValue += '0' + value.textContent;
+		if (displayValue === '' && value.textContent === '.') {
+			displayValue += '0.';
 		} else {
 			displayValue += value.textContent;
 		}
@@ -132,7 +138,7 @@ function populateDisplay(e) {
         displayValue = result;
     }
     
-    display.textContent = displayValue;
+	display.textContent = Number(displayValue).toLocaleString('en-US');
 }
 
 // numbers are managed here for the calculation
@@ -141,20 +147,24 @@ function handleNumbers(e) {
     if (displayValue === result || result === 'Cannot ÷ by 0') {
         reset();
     }
-    if (operatorSwitch === true) {
-        if (secondNumber.includes('.') && input === '.') return;
-		if (secondNumber === '' && input === '.') {
-			secondNumber += '0' + input;
-		} else {
-			secondNumber += input;
-		}
-    } else {
-        if (firstNumber.includes('.') && input === '.') return;
-		if (firstNumber === '' && input === '.') {
-			firstNumber += '0' + input;
-		} else {
-			firstNumber += input;
-		}
+
+    // limit inputs to 11 numbers
+    if (displayValue.length < 11) {
+        if (operatorSwitch === true) {
+            if (secondNumber.includes('.') && input === '.') return;
+            if (secondNumber === '' && input === '.') {
+                secondNumber += '0' + input;
+            } else {
+                secondNumber += input;
+            }
+        } else {
+            if (firstNumber.includes('.') && input === '.') return;
+            if (firstNumber === '' && input === '.') {
+                firstNumber += '0' + input;
+            } else {
+                firstNumber += input;
+            }
+        }
     }
 
     populateDisplay(e);
@@ -168,18 +178,31 @@ function handleKeyNumbers(key) {
     if (displayValue === result || result === 'Cannot ÷ by 0') {
         reset();
     }
-    if (operatorSwitch === true) {
-        if (secondNumber.includes('.') && key === '.') return;
-        secondNumber += key;
-        displayValue += key;
-    } else {
-        if (firstNumber.includes('.') && key === '.') return;
-        firstNumber += key;
-        displayValue += key;
+
+    // limit the user input to 11 numbers
+    if (displayValue.length < 11) {
+        if (operatorSwitch === true) {
+            if (secondNumber.includes('.') && key === '.') return;
+            if (secondNumber === '' && key === '.'){
+                secondNumber += '0.';
+                displayValue += '0.';
+            } else {
+                secondNumber += key;
+                displayValue += key;
+            }
+        } else {
+            if (firstNumber.includes('.') && key === '.') return;
+            if (firstNumber === '' && key === '.'){
+                firstNumber += '0.';
+                displayValue += '0.';
+            } else {
+                firstNumber += key;
+                displayValue += key;
+            }
+        }
     }
 
-    display.textContent = displayValue;
-
+	display.textContent = Number(displayValue).toLocaleString('en-US');
     // console.log('first: ', firstNumber, 'second: ', secondNumber);
 }  
 
@@ -308,7 +331,7 @@ function handleOperatorResult() {
 // round off result
 function displayResult() {
     displayValue = result;
-    display.textContent = displayValue;
+    display.textContent = Number(displayValue).toLocaleString('en-US');
 }
 
 // clear display
