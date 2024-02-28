@@ -117,30 +117,16 @@ let displayValue = '';
 function populateDisplay(e) {
     let value = e.target;
     
-    if (value.classList.contains('number')) {
-        if (displayValue === result || result === 'Cannot ÷ by 0') {
-            reset();
-        }
-        displayValue += value.textContent;
-    }
-    
-    if (value.classList.contains('equals')) {
-        displayValue = result;
-    }
-    
-    display.textContent = displayValue;
-}
-    
-
-function populateDisplay(e) {
-    let value = e.target;
-    
-    if (value.classList.contains('number')) {
-        if (displayValue === result || result === 'Cannot ÷ by 0') {
-            reset();
-        }
-        displayValue += value.textContent;
-    }
+	if (value.classList.contains('number')) {
+		if (displayValue === result || result === 'Cannot ÷ by 0') {
+			reset();
+		}
+		if (displayValue === '' && value === '.') {
+			displayValue += '0' + value.textContent;
+		} else {
+			displayValue += value.textContent;
+		}
+	}
     
     if (value.classList.contains('equals')) {
         displayValue = result;
@@ -157,10 +143,18 @@ function handleNumbers(e) {
     }
     if (operatorSwitch === true) {
         if (secondNumber.includes('.') && input === '.') return;
-        secondNumber += input;
+		if (secondNumber === '' && input === '.') {
+			secondNumber += '0' + input;
+		} else {
+			secondNumber += input;
+		}
     } else {
         if (firstNumber.includes('.') && input === '.') return;
-        firstNumber += input;
+		if (firstNumber === '' && input === '.') {
+			firstNumber += '0' + input;
+		} else {
+			firstNumber += input;
+		}
     }
 
     populateDisplay(e);
@@ -266,8 +260,19 @@ function handleKeyOperator(key) {
 }
 
 function handlePercent() {
-    if (!firstNumber || !secondNumber) return;
-    result = firstNumber * secondNumber / 100;
+	if (!operator || !firstNumber) {
+		firstNumber = '';
+		secondNumber = '';
+		operator = '';
+		result = '0';
+	} else if (!secondNumber && operator === '+' || !secondNumber && operator === '-') {
+		secondNumber = firstNumber;
+		result = firstNumber * secondNumber / 100;
+	} else if (!secondNumber && operator === '/' || !secondNumber && operator === '*') {
+		result = firstNumber / 100;
+	} else {
+		result = firstNumber * secondNumber / 100;
+	}
     displayValue = result;
     secondNumber = result;
     display.textContent = result;
@@ -316,7 +321,7 @@ function reset() {
     result = null;
     operatorSwitch = false;
     displayValue = '';
-    display.textContent = '';
+    display.textContent = '0';
     lastCalculation.textContent = '';
 }
 
