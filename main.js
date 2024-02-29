@@ -107,8 +107,8 @@ function operate(n1, n2, operator) {
             return null
     }
 	if (typeof result === "number") {
-		if (result.toString().length > 11) {
-			if (result.toFixed(6).length <= 11) {
+		if (result.toString().length > 12) {
+			if (result.toFixed(6).length <= 12) {
 				result = result.toFixed(6);
 			} else {
 				result = result.toExponential(6);
@@ -138,7 +138,7 @@ function populateDisplay(e) {
         displayValue = result;
     }
     
-	display.textContent = Number(displayValue).toLocaleString('en-US');
+	display.textContent = displayValue;
 }
 
 // numbers are managed here for the calculation
@@ -148,8 +148,8 @@ function handleNumbers(e) {
         reset();
     }
 
-    // limit inputs to 11 numbers
-    if (displayValue.length < 11) {
+    // limit inputs to 12 numbers
+    if (displayValue.length < 12) {
         if (operatorSwitch === true) {
             if (secondNumber.includes('.') && input === '.') return;
             if (secondNumber === '' && input === '.') {
@@ -179,8 +179,8 @@ function handleKeyNumbers(key) {
         reset();
     }
 
-    // limit the user input to 11 numbers
-    if (displayValue.length < 11) {
+    // limit the user input to 12 numbers
+    if (displayValue.length < 12) {
         if (operatorSwitch === true) {
             if (secondNumber.includes('.') && key === '.') return;
             if (secondNumber === '' && key === '.'){
@@ -202,7 +202,7 @@ function handleKeyNumbers(key) {
         }
     }
 
-	display.textContent = Number(displayValue).toLocaleString('en-US');
+	display.textContent = displayValue;
     // console.log('first: ', firstNumber, 'second: ', secondNumber);
 }  
 
@@ -331,7 +331,7 @@ function handleOperatorResult() {
 // round off result
 function displayResult() {
     displayValue = result;
-    display.textContent = Number(displayValue).toLocaleString('en-US');
+    display.textContent = displayValue;
 }
 
 // clear display
