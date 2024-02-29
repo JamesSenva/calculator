@@ -49,18 +49,19 @@ span {
 .display {
     height: 250px;
     /* display: flex;
-    flex-wrap: wrap; */
-    /* flex-direction: column;
+    flex-wrap: wrap;
+    flex-direction: column;
     align-items: end;
     justify-content: space-around;
     margin-right: 35px; */
     overflow: auto;
     position: relative;
+    text-align: right;
 }
 
 h4 {
     /* margin-bottom: 50px; */
-    font-size: 20px;
+    font-size: 25px;
     color: #4b4e55;
     position: absolute;
     top: 40px;
